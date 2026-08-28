@@ -38,24 +38,28 @@ app.get('/update-cobj', (req, res) => {
 // ROUTE 3 - Create the custom object record, or update it if a record with the same name already exists.
 
 app.post('/update', async (req, res) => {
-    console.log(req.body);
-    const update = {
-        properties: {
-            "favorite_book": req.body.newVal
+    const { name, genre, streaming_service } = req.body;
+    const properties = { name, genre, streaming_service };
+
+    try {
+        const searchUrl = `https://api.hubapi.com/crm/v3/objects/${CUSTOM_OBJECT_TYPE}/search`;
+        const searchBody = {
+            filterGroups: [{
+                filters: [{ propertyName: 'name', operator: 'EQ', value: name }]
+            }]
+        };
+        const searchResp = await axios.post(searchUrl, searchBody, { headers });
+        const existing = searchResp.data.results[0];
+
+        if (existing) {
+            const updateUrl = `https://api.hubapi.com/crm/v3/objects/${CUSTOM_OBJECT_TYPE}/${existing.id}`;
+            await axios.patch(updateUrl, { properties }, { headers });
+        } else {
+            const createUrl = `https://api.hubapi.com/crm/v3/objects/${CUSTOM_OBJECT_TYPE}`;
+            await axios.post(createUrl, { properties }, { headers });
         }
-    }
-
-    const email = req.query.email;
-    const updateContact = `https://api.hubapi.com/crm/v3/objects/contacts/${email}?idProperty=email`;
-    const headers = {
-        Authorization: `Bearer ${PRIVATE_APP_ACCESS}`,
-        'Content-Type': 'application/json'
-    };
-
-    try { 
-        await axios.patch(updateContact, update, { headers } );
-        res.redirect('back');
-    } catch(err) {
+        res.redirect('/');
+    } catch (err) {
         console.error(err);
         res.redirect('/update-cobj');
     }

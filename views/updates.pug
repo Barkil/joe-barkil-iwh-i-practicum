@@ -6,6 +6,7 @@ html
         link(rel="stylesheet", href="/css/style.css")
     body
         h1= `${title}`
+        a.update-link(href="/") Return to the homepage
         .form-wrapper
             form(action="/update" method="POST")
                 label(for="name") Name
@@ -30,4 +31,3 @@ html
                     option(value="not_listed") Not Listed
 
                 input(type="submit" value="Save")
-        a(href="/") Return to the homepage
