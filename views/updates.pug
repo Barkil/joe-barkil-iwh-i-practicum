@@ -1,0 +1,33 @@
+doctype html
+html
+    head
+        title= `${title}`
+        meta(name="viewport" content="width=device-width, initial-scale=1")
+        link(rel="stylesheet", href="/css/style.css")
+    body
+        h1= `${title}`
+        a.update-link(href="/") Return to the homepage
+        .form-wrapper
+            form(action="/update" method="POST")
+                label(for="name") Name
+                input(type="text" id="name" name="name" required)
+
+                label(for="genre") Genre
+                select(id="genre" name="genre" required)
+                    option(value="") -- Select a genre --
+                    option(value="high_fantasy") High Fantasy
+                    option(value="drama") Drama
+                    option(value="thriller") Thriller
+                    option(value="kid_show") Kid Show
+                    option(value="mystery") Mystery
+                    option(value="other") Other
+
+                label(for="streaming_service") Streaming Service
+                select(id="streaming_service" name="streaming_service" required)
+                    option(value="") -- Select a streaming service --
+                    option(value="hbo_max") HBO MAX
+                    option(value="hulu_disney") Hulu/Disney
+                    option(value="netflix") Netflix
+                    option(value="not_listed") Not Listed
+
+                input(type="submit" value="Save")
